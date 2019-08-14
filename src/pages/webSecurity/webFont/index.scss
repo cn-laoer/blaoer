@@ -1,0 +1,27 @@
+/* web 网页浅加密字体 */
+@font-face {
+    font-family: 'my_font';
+    src: url('../../../assets/fonts/icomoon.eot');
+    src:  url('../../../assets/fonts/icomoon.eot') format('embedded-opentype'),
+    url('../../../assets/fonts/icomoon.ttf') format('truetype'),
+    url('../../../assets/fonts/icomoon.woff') format('woff'),
+    url('../../../assets/fonts/icomoon.svg') format('svg');
+}
+/* 定义一个类  使用当前定义的字体库 */
+.my_webfont{
+    font-family: my_font !important;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
+.descImg{
+    width: 800px;
+    height: auto;
+}
+.descImg1{
+    width: 500px;
+    height: auto;
+}
+.mb15{
+    margin-bottom: 15px;
+}
