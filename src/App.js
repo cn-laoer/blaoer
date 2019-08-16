@@ -8,7 +8,7 @@ import History from './api/history';
 
 function App() {  
   return (
-    <Router basename="/blaoer/build/" history={History}>
+    <Router basename="/" history={History}>
       <PrivateRoute path="/" component={Index}/>
     </Router>
   );
