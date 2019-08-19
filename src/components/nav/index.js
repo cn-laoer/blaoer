@@ -8,6 +8,12 @@ let nowIndex = [];
 export default class Sider extends Component {
     componentWillMount(){
         for (let i=0;i<routes.length;i++) {
+            // if ('/'+window.location.pathname.split('/')[1]!==routes[i].path) {
+            //     nowIndex = [];
+            // } else {
+            //     nowIndex = [];
+            //     nowIndex.push(String(i+1));                
+            // }
             if ('/'+window.location.pathname.split('/')[1]===routes[i].path) {
                 nowIndex = [];
                 nowIndex.push(String(i+1));
@@ -132,7 +138,21 @@ export default class Sider extends Component {
                     </Link>
                 </Menu.Item>
             </SubMenu>
-            
+            <SubMenu
+                key="sub5"
+                title={
+                <span>
+                    <Icon type="heat-map" />
+                    <span>react</span>
+                </span>
+                }
+            >
+                <Menu.Item key="15">
+                    <Link to="/react">
+                        <span>list</span>
+                    </Link>
+                </Menu.Item>
+            </SubMenu>
         </Menu>
     )
   }

@@ -12,6 +12,8 @@ import CssGradientText from '../pages/css/gradientText';
 import GetAxios from '../pages/axios/index';
 import Table from '../pages/table/list/index';
 import EditTable from '../pages/table/edit/index';
+import ReList from '../pages/react/index/index';
+import ReDetail from '../pages/react/detail/index';
 
 
 export const routes = [
@@ -96,6 +98,18 @@ export const routes = [
     {
         path: '/editTable',
         component: EditTable,
+        exact: true,
+        render: false
+    },
+    {
+        path: '/react',
+        component: ReList,
+        exact: true,
+        render: false
+    },
+    {
+        path: '/react/detail/:id',
+        component: ReDetail,
         exact: true,
         render: false
     }
