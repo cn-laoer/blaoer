@@ -3,6 +3,7 @@ import { Form, Input, Button, message } from 'antd';
 import { aget } from '../../../api/ajax';
 // 富文本编辑器
 import E from 'wangeditor';
+import History from '../../../api/history';
 import './index.scss';
 
 const formItemLayout = {
@@ -39,6 +40,10 @@ class addForm extends Component {
             console.log(res);
             if (res.code===0) {
                 message.success('添加成功');
+                setTimeout(()=>{
+                    // window.location.href = '/react';
+                    History.push({pathname:`/react`});
+                },800);
             } else {
                 message.error(res.msg);
             }
@@ -159,6 +164,10 @@ class addForm extends Component {
 
 const AddFormDom = Form.create({name: 'addForm'})(addForm);
 export default class ReAdd extends Component {
+    constructor(props) {
+        super(props);
+        this.state = { };
+    }
     render() {
         return (
             <AddFormDom></AddFormDom>
