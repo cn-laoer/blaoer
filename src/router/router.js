@@ -14,6 +14,7 @@ import Table from '../pages/table/list/index';
 import EditTable from '../pages/table/edit/index';
 import ReList from '../pages/react/index/index';
 import ReDetail from '../pages/react/detail/index';
+import ReAdd from '../pages/react/add/index';
 
 
 export const routes = [
@@ -108,8 +109,14 @@ export const routes = [
         render: false
     },
     {
-        path: '/react/detail/:id',
+        path: '/reactDetail/:id',
         component: ReDetail,
+        exact: true,
+        render: false
+    },
+    {
+        path: '/reactAdd',
+        component: ReAdd,
         exact: true,
         render: false
     }

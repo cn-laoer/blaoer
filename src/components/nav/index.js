@@ -152,6 +152,11 @@ export default class Sider extends Component {
                         <span>list</span>
                     </Link>
                 </Menu.Item>
+                <Menu.Item key="16">
+                    <Link to="/reactAdd">
+                        <span>add</span>
+                    </Link>
+                </Menu.Item>
             </SubMenu>
         </Menu>
     )

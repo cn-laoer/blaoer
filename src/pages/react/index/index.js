@@ -1,5 +1,5 @@
 import React,{Component} from 'react';
-import { List, Card } from 'antd';
+import { List, Card, Button } from 'antd';
 import { aget } from '../../../api/ajax';
 import './index.scss';
 
@@ -20,7 +20,7 @@ export default class ReList extends Component {
         });
     }
     showDetail(id) {
-        this.props.history.push({pathname:`/react/detail/${id}`});
+        this.props.history.push({pathname:`/reactDetail/${id}`});
     }
     render (){
         return (
@@ -33,7 +33,10 @@ export default class ReList extends Component {
                         className="cursor"
                         onClick={()=> {this.showDetail(item.id)}}
                     >
-                        <Card title={item.title}>{item.description}</Card>
+                        <Button className="del">del</Button>
+                        <Card title={item.title}>
+                            {item.description}
+                        </Card>
                     </List.Item>
                     )}
                 />
