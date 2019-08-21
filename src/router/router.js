@@ -15,6 +15,7 @@ import EditTable from '../pages/table/edit/index';
 import ReList from '../pages/react/index/index';
 import ReDetail from '../pages/react/detail/index';
 import ReAdd from '../pages/react/add/index';
+import ReEdit from '../pages/react/edit';
 
 
 export const routes = [
@@ -117,6 +118,12 @@ export const routes = [
     {
         path: '/reactAdd',
         component: ReAdd,
+        exact: true,
+        render: false
+    },
+    {
+        path: '/reactEdit/:id',
+        component: ReEdit,
         exact: true,
         render: false
     }

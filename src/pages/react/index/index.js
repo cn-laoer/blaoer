@@ -1,5 +1,5 @@
 import React,{Component} from 'react';
-import { List, Card, Button, message, Popconfirm } from 'antd';
+import { List, Card, Button, message } from 'antd';
 import { aget } from '../../../api/ajax';
 import './index.scss';
 
@@ -19,7 +19,8 @@ export default class ReList extends Component {
             });
         });
     }
-    showDetail(id) {
+    showDetail(e,id) {
+        e.preventDefault();
         this.props.history.push({pathname:`/reactDetail/${id}`});
     }
     delData(e,id) {
@@ -31,6 +32,11 @@ export default class ReList extends Component {
             this.getData();
         });
     }
+    goEdit(e,id) {
+        e.preventDefault();
+        e.stopPropagation();
+        this.props.history.push({pathname:`/reactEdit/${id}`});
+    }
     render (){
         return (
             <div className="bmain">
@@ -40,21 +46,21 @@ export default class ReList extends Component {
                     renderItem={item => (
                     <List.Item
                         className="cursor"
-                        onClick={()=> {this.showDetail(item.id)}}
+                        onClick={(e)=> {this.showDetail(e,item.id)}}
                     >
-                        <Popconfirm 
-                            title="确定删除?"
-                            onConfirm={(e) => this.delData(e,item.id)}
-                            okText="确定"
-                            cancelText="取消"
-                            >
-                            <Button
-                                type="danger"
-                                className="del"
-                                shape="circle"
-                                icon="delete"
-                            ></Button>
-                        </Popconfirm>
+                        <div className="del">
+                            <Button type="primary" shape="circle" icon="edit" onClick={(e)=> this.goEdit(e,item.id)}></Button>                        
+                            {item.delete === 1? (
+                                <Button
+                                    type="danger"
+                                    shape="circle"
+                                    icon="delete"
+                                    onClick={(e) => this.delData(e,item.id)}
+                                ></Button>
+                            ) : (
+                                ''
+                            )}
+                        </div>
                         <Card title={item.title}>
                             {item.description}
                         </Card>

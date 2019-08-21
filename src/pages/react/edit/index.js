@@ -1,5 +1,5 @@
 import React,{Component} from 'react';
-import { Form, Input, Button, message, Switch } from 'antd';
+import { Form, Input, Button, message, Switch, Icon } from 'antd';
 import { aget } from '../../../api/ajax';
 // 富文本编辑器
 import E from 'wangeditor';
@@ -28,14 +28,20 @@ const tailFormItemLayout = {
       },
     },
 };
+let matchs = '';
+let Data = '';
 
-class addForm extends Component {
-    state = {
-        confirmDirty: false,
-        autoCompleteResult: [],
+class editForm extends React.Component {
+    constructor(props) {
+        super(props);
+        this.state = {
+            confirmDirty: false,
+            autoCompleteResult: [],
+            data: '',
+            prop: props
+        };
     }
-    
-    addData (data) {
+    editData (data) {
         aget(`${global.serviceUrl}/react/add`,data).then((res) => {
             console.log(res);
             if (res.code===0) {
@@ -53,9 +59,10 @@ class addForm extends Component {
         e.preventDefault();
         this.props.form.validateFields((err, values) => {
             if (!err) {
-                console.log('Received values of form: ', values);
                 values.delete === true ? values.delete = 1: values.delete = 0;
-                this.addData(values);
+                values.status === true ? values.status = 1: values.status = 2;
+                console.log('Received values of form: ', values);
+                // this.addData(values);
             }
         });
     }
@@ -83,11 +90,19 @@ class addForm extends Component {
           callback();
         }
     }
+    goBack() {
+        History.push({pathname:`/react`});
+    }
     render (){
         const { getFieldDecorator } = this.props.form;
         // const { autoCompleteResult } = this.state;
         return (
             <div className="bmain" >
+                <Button type="primary" 
+                    onClick={()=>{this.goBack()}}>
+                    <Icon type="left" />
+                    Go back
+                </Button>
                 <Form {...formItemLayout} onSubmit={this.handleSubmit}>
                     <Form.Item label="标题">
                         {getFieldDecorator('title', {
@@ -139,7 +154,14 @@ class addForm extends Component {
                         })(<div ref={(e) => {this.refEditor = e}}></div>)}
                     </Form.Item>
                     <Form.Item label="能否删除">
-                        {getFieldDecorator('delete', { valuePropName: 'checked' })(<Switch />)}
+                        {getFieldDecorator('delete', { valuePropName: 'checked' })(
+                            <Switch />
+                        )}
+                    </Form.Item>
+                    <Form.Item label="是否上架">
+                        {getFieldDecorator('status', { valuePropName: 'checked' })(
+                            <Switch />
+                        )}
                     </Form.Item>
                     <Form.Item {...tailFormItemLayout}>
                         <Button type="primary" htmlType="submit">
@@ -150,7 +172,22 @@ class addForm extends Component {
             </div>
         )
     }
+    getData () {
+        aget(`${global.serviceUrl}/react/detail`,{id: Number(matchs.params.id)}).then((res) => {
+            console.log(res);
+            let resData = res;
+            if (resData.code === 0) {
+                // this.setState({
+                //     data: resData.data
+                // });
+                Data = resData.data;
+            }
+        });
+    }
     componentDidMount() {
+        // this.getData();
+        // console.log(this.props);
+        // console.log(this.state.prop);
         const elem = this.refEditor;
         const editor = new E(elem);
         // 使用 onchange 函数监听内容的变化，并实时更新到 state 中
@@ -163,18 +200,30 @@ class addForm extends Component {
             }
         }
         editor.create();
+        editor.txt.html = Data.content;
+        this.props.form.setFieldsValue({
+            title: Data.title,
+            author: Data.author,
+            description: Data.description,
+            delete: Data.delete===1?true:false,
+            status: Data.status===1?true:false,
+        });
     }
 }
 
-const AddFormDom = Form.create({name: 'addForm'})(addForm);
-export default class ReAdd extends Component {
+const EditFormDom = Form.create({name: 'addForm'})(editForm);
+export default class ReEdit extends Component {
     constructor(props) {
         super(props);
-        this.state = { };
+        this.state = {
+        };
+    }
+    componentDidMount() {
+        matchs = this.props.match;
     }
     render() {
         return (
-            <AddFormDom></AddFormDom>
+            <EditFormDom></EditFormDom>
         )
     }
 }
