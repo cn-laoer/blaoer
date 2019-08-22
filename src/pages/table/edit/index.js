@@ -186,9 +186,11 @@ class EditableTable extends React.Component {
   }
 
   downData (data) {
-    let upData = data;
-    upData.status = 2;
-    let qsData = qs.stringify(upData);
+    let obj = {
+      status: 2,
+      id: data.id
+    }
+    let qsData = qs.stringify(obj);
     axios.get(`${global.serviceUrl}/update/news?${qsData}`)
     .then(res => {
       message.info('this data is down');
@@ -197,9 +199,11 @@ class EditableTable extends React.Component {
   }
 
   upData (data) {
-    let upData = data;
-    upData.status = 1;
-    let qsData = qs.stringify(upData);
+    let obj = {
+      status: 1,
+      id: data.id
+    }
+    let qsData = qs.stringify(obj);
     axios.get(`${global.serviceUrl}/update/news?${qsData}`)
     .then(res => {
       message.info('this data is up');

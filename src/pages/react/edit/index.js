@@ -28,28 +28,27 @@ const tailFormItemLayout = {
       },
     },
 };
-let matchs = '';
-let Data = '';
-
 class editForm extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
             confirmDirty: false,
             autoCompleteResult: [],
-            data: '',
+            data: {},
             prop: props
         };
     }
     editData (data) {
-        aget(`${global.serviceUrl}/react/add`,data).then((res) => {
+        let upData = data;
+        upData.id = Number(this.state.prop.match.params.id);
+        aget(`${global.serviceUrl}/react/update`,upData).then((res) => {
             console.log(res);
-            if (res.code===0) {
-                message.success('添加成功');
-                setTimeout(()=>{
-                    // window.location.href = '/react';
-                    History.push({pathname:`/react`});
-                },800);
+            if (res.data===true) {
+                message.success('修改成功');
+                // setTimeout(()=>{
+                //     // window.location.href = '/react';
+                //     History.push({pathname:`/react`});
+                // },800);
             } else {
                 message.error(res.msg);
             }
@@ -62,7 +61,7 @@ class editForm extends React.Component {
                 values.delete === true ? values.delete = 1: values.delete = 0;
                 values.status === true ? values.status = 1: values.status = 2;
                 console.log('Received values of form: ', values);
-                // this.addData(values);
+                this.editData(values);
             }
         });
     }
@@ -165,7 +164,7 @@ class editForm extends React.Component {
                     </Form.Item>
                     <Form.Item {...tailFormItemLayout}>
                         <Button type="primary" htmlType="submit">
-                            添加
+                            修改
                         </Button>
                     </Form.Item>
                 </Form>
@@ -173,41 +172,39 @@ class editForm extends React.Component {
         )
     }
     getData () {
-        aget(`${global.serviceUrl}/react/detail`,{id: Number(matchs.params.id)}).then((res) => {
+        aget(`${global.serviceUrl}/react/detail`,{id: Number(this.state.prop.match.params.id)}).then((res) => {
             console.log(res);
             let resData = res;
             if (resData.code === 0) {
                 // this.setState({
                 //     data: resData.data
                 // });
-                Data = resData.data;
+                const elem = this.refEditor;
+                const editor = new E(elem);
+                // 使用 onchange 函数监听内容的变化，并实时更新到 state 中
+                editor.customConfig.onchange = html => {
+                    // console.log(html);
+                    if (editor.txt.text()&&editor.txt.text()!==''&&editor.txt.text().length>0) {
+                        this.props.form.setFieldsValue({'content':html})
+                    } else {
+                        this.props.form.setFieldsValue({'content':''})                
+                    }
+                }
+                editor.create(); 
+                editor.txt.html(resData.data.content);
+                this.props.form.setFieldsValue({
+                    title: resData.data.title,
+                    author: resData.data.author,
+                    description: resData.data.description,
+                    delete: resData.data.delete===1?true:false,
+                    status: resData.data.status===1?true:false,
+                    content: resData.data.content,
+                });
             }
         });
     }
     componentDidMount() {
-        // this.getData();
-        // console.log(this.props);
-        // console.log(this.state.prop);
-        const elem = this.refEditor;
-        const editor = new E(elem);
-        // 使用 onchange 函数监听内容的变化，并实时更新到 state 中
-        editor.customConfig.onchange = html => {
-            // console.log(html);
-            if (editor.txt.text()&&editor.txt.text()!==''&&editor.txt.text().length>0) {
-                this.props.form.setFieldsValue({'content':html})
-            } else {
-                this.props.form.setFieldsValue({'content':''})                
-            }
-        }
-        editor.create();
-        editor.txt.html = Data.content;
-        this.props.form.setFieldsValue({
-            title: Data.title,
-            author: Data.author,
-            description: Data.description,
-            delete: Data.delete===1?true:false,
-            status: Data.status===1?true:false,
-        });
+        this.getData();
     }
 }
 
@@ -218,12 +215,9 @@ export default class ReEdit extends Component {
         this.state = {
         };
     }
-    componentDidMount() {
-        matchs = this.props.match;
-    }
     render() {
         return (
-            <EditFormDom></EditFormDom>
+            <EditFormDom {...this.props}></EditFormDom>
         )
     }
 }
