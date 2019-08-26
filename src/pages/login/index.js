@@ -1,10 +1,15 @@
 import React,{Component} from 'react';
-import {Button} from 'antd';
+import './index.scss';
+import loginBg from '../../assets/images/login_bg.jpg';
 
-export default class Home extends Component {
+export default class Login extends Component {
     render() {
         return (
-            <Button type="primary">登录</Button>
+            <div className="background">
+                <div className="login">
+                </div>
+                <img src={loginBg} alt="bg" className="dot"/>
+            </div>
         )
     }
 }

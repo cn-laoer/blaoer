@@ -11,7 +11,7 @@ class ContentMain extends Component{
                 {
                     routes.map((item, index)=>{
                         return (
-                            <PrivateRoute path={item.path} exact={item.exact} component={item.component} key={index}/>
+                            item.path?<PrivateRoute path={item.path} exact={item.exact} component={item.component} key={index}/>:<Route  component={NotFound} />
                         )
                     })
                 }
