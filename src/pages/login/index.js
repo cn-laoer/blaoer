@@ -15,7 +15,7 @@ class HorizontalLoginForm extends React.Component {
     componentDidMount() {
         // To disabled submit button at the beginning.
         this.props.form.validateFields();
-        // console.log(md5('laonbhhhher'));
+        // console.log(md5('laoLaoer123er'));
     }
   
     handleSubmit = e => {
