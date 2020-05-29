@@ -16,6 +16,7 @@ import ReList from '../pages/react/index/index';
 import ReDetail from '../pages/react/detail/index';
 import ReAdd from '../pages/react/add/index';
 import ReEdit from '../pages/react/edit';
+import goodsList from '../pages/goods/index';
 
 
 export const routes = [
@@ -124,6 +125,12 @@ export const routes = [
     {
         path: '/reactEdit/:id',
         component: ReEdit,
+        exact: true,
+        render: false
+    },
+    {
+        path: '/goods',
+        component: goodsList,
         exact: true,
         render: false
     }
