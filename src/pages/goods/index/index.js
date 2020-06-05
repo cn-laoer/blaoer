@@ -11,7 +11,7 @@ const IconText = ({ type, text }) => (
 );
 const Search = Input.Search;
 const Option = Select.Option;
-export default class Home extends Component {
+export default class Goods extends Component {
     constructor(props) {
         super(props);
         this.state = { data: [],total:0,pageSize:10,page:1,name:'',type:0 };
@@ -95,10 +95,10 @@ export default class Home extends Component {
                 >
                     <List.Item.Meta
                         title={item.goods_name}
-                        description={'品牌：'+item.brand+'、产地：'+item.home+'、保质期：'+item.prime_date}
+                        description={'品牌：'+item.brand+'、产地：'+item.home+'、保质期：'+item.prime_date+'、规格：'+item.weight}
                     />
                         <span className='block'>{'所属公司：'+item.supplier}</span>
-                        {'￥'+(item.price/100).toFixed(2)+'/'+item.type+item.unit}
+                        {'￥'+(item.price/100).toFixed(2)+'/'+item.size+item.unit}
                         </List.Item>
                     )}
                 />
