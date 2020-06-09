@@ -34,6 +34,7 @@ const dateFormat = 'YYYY/MM/DD';
 class addForm extends Component {
     state = {
         confirmDirty: false,
+        exceedDate: '',
         autoCompleteResult: [],
     }
     
@@ -55,8 +56,14 @@ class addForm extends Component {
         e.preventDefault();
         this.props.form.validateFields((err, values) => {
             if (!err) {
+                let openDate = new Date(values.production_date._d).getTime();
+                let datestamp = new Date(openDate);
+                let Y = datestamp.getFullYear();
+                let M = (datestamp.getMonth()+1)<10?'0'+(datestamp.getMonth()+1):(datestamp.getMonth()+1);
+                let D = datestamp.getDate()<10?'0'+datestamp.getDate():datestamp.getDate();
+                let openDateStr = Y+'-'+M+'-'+D;
+                values.production_date = openDateStr;
                 console.log('Received values of form: ', values);
-                console.log(values.production_date._d);
                 values.delete === true ? values.delete = 1: values.delete = 0;
                 values.hot === true ? values.hot = 1: values.hot = 0;
                 // this.addData(values);
@@ -240,7 +247,21 @@ class addForm extends Component {
                                 }
                             ]
                         })(<DatePicker format={dateFormat} onChange={(date, dateString)=>{
-                            console.log(date+'==='+dateString);
+                            // console.log(date+'==='+dateString);
+                            let primeStr = this.props.form.getFieldValue('prime_date');
+                            let prime = 0;
+                            if (primeStr!=null&&primeStr.indexOf('天')!==-1) {
+                                prime = Number(primeStr.substring(0, primeStr.length - 1)); 
+                            } else {
+                                prime = Number(primeStr);
+                            }
+                            let openDate = new Date(dateString).getTime();
+                            let openDatestamp = new Date(openDate+(prime*24*60*60*1000));
+                            let Y = openDatestamp.getFullYear();
+                            let M = (openDatestamp.getMonth()+1)<10?'0'+(openDatestamp.getMonth()+1):(openDatestamp.getMonth()+1);
+                            let D = openDatestamp.getDate()<10?'0'+openDatestamp.getDate():openDatestamp.getDate();
+                            let exceedDateStr = Y+'-'+M+'-'+D;
+                            this.props.form.setFieldsValue({'exceed_date':exceedDateStr});
                         }} />)}
                         {/* {getFieldDecorator('production_date', {
                             initialValue: [moment('2020-06-01', 'YYYY/MM/DD'), 
@@ -249,7 +270,7 @@ class addForm extends Component {
                             console.log(date+'==='+dateString);
                         }} />)})} */}
                     </Form.Item>
-                    <Form.Item label="保质期">
+                    <Form.Item label="保质期（天）">
                         {getFieldDecorator('prime_date', {
                             rules: [
                                 {
@@ -260,7 +281,24 @@ class addForm extends Component {
                                     validator: this.descValidate
                                 }
                             ]
-                        })(<Input />)}
+                        })(<Input onChange={e => {
+                            e.persist();
+                            // console.log(e.target.value);
+                            let primeStr = e.target.value;
+                            let prime = 0;
+                            if (primeStr.indexOf('天')!==-1) {
+                                prime = Number(primeStr.substring(0, primeStr.length - 1)); 
+                            } else {
+                                prime = Number(e.target.value);
+                            }
+                            let openDate = new Date(this.props.form.getFieldValue('production_date')).getTime();
+                            let openDatestamp = new Date(openDate+(prime*24*60*60*1000));
+                            let Y = openDatestamp.getFullYear();
+                            let M = (openDatestamp.getMonth()+1)<10?'0'+(openDatestamp.getMonth()+1):(openDatestamp.getMonth()+1);
+                            let D = openDatestamp.getDate()<10?'0'+openDatestamp.getDate():openDatestamp.getDate();
+                            let exceedDateStr = Y+'-'+M+'-'+D;
+                            this.props.form.setFieldsValue({'exceed_date':exceedDateStr});
+                          }}/>)}
                     </Form.Item>
                     <Form.Item label="过期日期">
                         {getFieldDecorator('exceed_date', {
@@ -273,7 +311,7 @@ class addForm extends Component {
                                     validator: this.descValidate
                                 }
                             ]
-                        })(<Input />)}
+                        })(<Input disabled />)}
                     </Form.Item>
                     <Form.Item label="产地">
                         {getFieldDecorator('home', {
