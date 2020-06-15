@@ -84,7 +84,7 @@ export default class Home extends Component {
                     beforeUpload={beforeUpload}
                     onChange={this.handleChange}
                 >
-                    {this.state.imageUrl ? <img src={this.state.imageUrl} alt="avatar" style={{ width: '100%' }} /> : uploadButton}
+                    {this.state.imageUrl ? <img src={this.state.imageUrl} alt="goods_img" style={{ width: '100%' }} /> : uploadButton}
                 </Upload>
             </div>
         )

@@ -1,12 +1,24 @@
 import React,{Component} from 'react';
-import { Form, Input, Button, message, Switch, DatePicker } from 'antd';
-import { aget } from '../../../api/ajax';
+import { Form, Input, Button, message, Switch, DatePicker,Upload, Icon } from 'antd';
+import { apost } from '../../../api/ajax';
 import History from '../../../api/history';
 import moment from 'moment';
 import 'moment/locale/zh-cn';
 moment.locale('zh-cn');
 
 
+//   上传前处理，大小判断及文件格式判断
+function beforeUpload(file) {
+    const isJpgOrPng = file.type === 'image/jpeg' || file.type === 'image/png';
+    if (!isJpgOrPng) {
+        message.error('只能上传 JPG/PNG 文件格式的图片!');
+    }
+    const isLt2M = file.size / 1024 / 1024 < 5;
+    if (!isLt2M) {
+        message.error('上传的图片大小不能超过 5MB!');
+    }
+    return isJpgOrPng && isLt2M;
+}
 const formItemLayout = {
     labelCol: {
       xs: { span: 24 },
@@ -36,10 +48,12 @@ class addForm extends Component {
         confirmDirty: false,
         exceedDate: '',
         autoCompleteResult: [],
+        loading: false,
+        imageUrl: ''
     }
     
     addData (data) {
-        aget(`${global.serviceUrl}/goods/add`,data).then((res) => {
+        apost(`${global.serviceUrl}/goods/add`,data).then((res) => {
             console.log(res);
             if (res.code===0) {
                 message.success('添加成功');
@@ -64,11 +78,37 @@ class addForm extends Component {
                 let openDateStr = Y+'-'+M+'-'+D;
                 values.production_date = openDateStr;
                 console.log('Received values of form: ', values);
-                values.delete === true ? values.delete = 1: values.delete = 0;
+                values.is_del === true ? values.is_del = 1: values.is_del = 0;
                 values.hot === true ? values.hot = 1: values.hot = 0;
-                // this.addData(values);
+                this.addData(values);
             }
         });
+    }
+    handleChange = info => {
+        if (info.file.status === 'uploading') {
+          this.setState({ loading: true });
+          return;
+        }
+        if (info.file.status === 'done') {
+          // Get this url from response in real world.
+        //   console.log(info);
+            //处理上传完成接口返回状态及图片地址
+            if (info&&info.fileList&&info.fileList.length>0) {
+                if (info.fileList[0].response.code===200) {
+                    this.setState({
+                        imageUrl: info.fileList[0].response.data.avatar,
+                        loading: false,
+                    });
+                    this.props.form.setFieldsValue({'goods_img':info.fileList[0].response.data.avatar});
+                }
+            }
+        //   getBase64(info.file.originFileObj, imageUrl =>
+        //     this.setState({
+        //       imageUrl,
+        //       loading: false,
+        //     }),
+        //   );
+        }
     }
     titleValidate = (rule, value, callback) => {
         // const { form } = this.props;
@@ -105,6 +145,12 @@ class addForm extends Component {
     render (){
         const { getFieldDecorator } = this.props.form;
         // const { autoCompleteResult } = this.state;
+        const uploadButton = (
+            <div>
+                <Icon type={this.state.loading ? 'loading' : 'plus'} />
+                <div className="ant-upload-text">上传图片</div>
+            </div>
+        );
         return (
             <div className="bmain" >
                 <Form {...formItemLayout} onSubmit={this.handleSubmit}>
@@ -212,6 +258,19 @@ class addForm extends Component {
                             ]
                         })(<Input />)}
                     </Form.Item>
+                    <Form.Item label="商品图片">
+                        <Upload
+                            name="avatar"
+                            listType="picture-card"
+                            className="avatar-uploader"
+                            showUploadList={false}
+                            action={`${global.serviceUrl}/uploadImg`}
+                            beforeUpload={beforeUpload}
+                            onChange={this.handleChange}
+                        >
+                            {this.state.imageUrl ? <img src={this.state.imageUrl} alt="goods_img" style={{ width: '100%' }} /> : uploadButton}
+                        </Upload>
+                    </Form.Item>
                     <Form.Item label="图片地址">
                         {getFieldDecorator('goods_img', {
                             rules: [
@@ -223,7 +282,9 @@ class addForm extends Component {
                                     validator: this.imgValidate
                                 }
                             ]
-                        })(<Input />)}
+                        })(
+                            <Input disabled />
+                        )}
                     </Form.Item>
                     <Form.Item label="库存">
                         {getFieldDecorator('stock', {
@@ -340,7 +401,7 @@ class addForm extends Component {
                         })(<div ref={(e) => {this.refEditor = e}}></div>)}
                     </Form.Item> */}
                     <Form.Item label="是否删除">
-                        {getFieldDecorator('delete', { valuePropName: 'checked' })(<Switch />)}
+                        {getFieldDecorator('is_del', { valuePropName: 'checked' })(<Switch />)}
                     </Form.Item>
                     <Form.Item {...tailFormItemLayout}>
                         <Button type="primary" htmlType="submit">
