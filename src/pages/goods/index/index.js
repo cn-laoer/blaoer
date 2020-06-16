@@ -1,6 +1,6 @@
 import React,{Component} from 'react';
 import { aget } from '../../../api/ajax';
-import { List , Icon, Input, Select } from 'antd';
+import { List , Icon, Input, Select, Button } from 'antd';
 import './index.scss';
 
 const IconText = ({ type, text }) => (
@@ -31,6 +31,11 @@ export default class Goods extends Component {
                 });
             }
         });
+    }
+    showDetail(e,code) {
+        e.preventDefault();
+        e.stopPropagation();
+        this.props.history.push({pathname:`/goodsEdit/${code}`});
     }
     render() {
         return (
@@ -81,6 +86,8 @@ export default class Goods extends Component {
                 renderItem={item => (
                 <List.Item
                     key={item.id}
+                    className="cursor"
+                    onClick={(e)=> {this.showDetail(e,item.bar_code)}}
                     actions={[
                         <IconText type="star-o" text={parseInt(Math.random(0,9)*500)} key="list-vertical-star-o" />,
                         <IconText type="like-o" text={parseInt(Math.random(0,9)*1000)} key="list-vertical-like-o" />,
@@ -97,6 +104,9 @@ export default class Goods extends Component {
                         title={item.goods_name}
                         description={'品牌：'+item.brand+'、产地：'+item.home+'、保质期：'+item.prime_date+'、规格：'+item.weight}
                     />
+                        <div className="del">
+                            <Button type="primary" shape="circle" icon="edit" onClick={(e)=> this.showDetail(e,item.bar_code)}></Button>                        
+                        </div>
                         <span className='block'>{'所属公司：'+item.supplier}</span>
                         {'￥'+(item.price/100).toFixed(2)+'/'+item.size+item.unit}
                         </List.Item>

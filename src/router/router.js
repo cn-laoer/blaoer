@@ -18,6 +18,7 @@ import ReAdd from '../pages/react/add/index';
 import ReEdit from '../pages/react/edit';
 import goodsList from '../pages/goods/index';
 import goodsAdd from '../pages/goods/add/index';
+import goodsEdit from '../pages/goods/edit/index';
 
 
 export const routes = [
@@ -138,6 +139,12 @@ export const routes = [
     {
         path: '/goodsAdd',
         component: goodsAdd,
+        exact: true,
+        render: false
+    },
+    {
+        path: '/goodsEdit/:id',
+        component: goodsEdit,
         exact: true,
         render: false
     }
